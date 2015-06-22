@@ -1,0 +1,20 @@
+<Alloy>
+	<View id="main" >
+		<View class="sp1/2" />
+		<View id="header" class="bar">
+			<Label id="monthName" class="headerText" />
+		</View>
+		<View class="sp1/2" />
+		<View id="calendar" >
+			<View id="dayLabels" >
+				<View id="dayLabelsRow" />
+			</View>
+			<ScrollableView id="monthScroll" />
+		</View>
+		<View class="sp1/2" />
+		<View id="footer" class="bar">
+			<Label class="headerText" text="Addio" />
+		</View>
+		<View class="sp1/2" />
+	</View>
+</Alloy>
