@@ -6,9 +6,7 @@
 		</View>
 		<View class="sp1/2" />
 		<View id="calendar" >
-			<View id="dayLabels" >
-				<View id="dayLabelsRow" />
-			</View>
+			<View id="dayLabels" />
 			<ScrollableView id="monthScroll" />
 		</View>
 		<View class="sp1/2" />

@@ -30,17 +30,10 @@
 	width: Ti.UI.FILL,
 	height: 30,
 },
-"#dayLabelsRow": {
-	layout: 'horizontal',
-	width: Ti.UI.SIZE,
-	height: Ti.UI.FILL,
-},
-".dayLabelView": {
-	height: Ti.UI.FILL,
-	backgroundColor: '#3000',
-},
 ".dayLabel": {
-	left: 5,
+	height: 30,
+	backgroundColor: '#3000',
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
 },
 "#monthScroll": {
 	width: Ti.UI.FILL,
@@ -48,16 +41,10 @@
 },
 ".month": {
 	width: Ti.UI.FILL,
-	height: Ti.UI.SIZE,
-	layout: 'vertical'
-},
-".monthRow": {
-	layout: 'horizontal',
-	width: Ti.UI.SIZE,
-	height: 50,
+	height: Ti.UI.SIZE
 },
 ".day": {
-	height: Ti.UI.FILL
+	height: 50
 },
 ".dayNumber": {
 	top: 3,
