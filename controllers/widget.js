@@ -38,7 +38,7 @@ function getDayLabels() {
 			classes: ['dayLabel'],
 			width: width,
 			text: day,
-			left: i * (width + 1)
+			left: i * width
 		});
 
 		$.dayLabels.add($label);
@@ -55,29 +55,6 @@ function isInMomentsList(date, dates) {
 	return _.find(dates, function(day) {
 		return date.isSame(day);
 	});
-}
-
-function getDayView(date, current, active) {
-	var is_today = date.isSame(Moment(), 'day');
-	var $this = $.UI.create('View', {
-		classes: ['day'],
-		width: Math.floor($.calendar.rect.width / 7),
-		backgroundColor: is_today ? args.todayBackgroundColor : args.dateBackgroundColor,
-		opacity: current ? 1 : 0.5,
-		date: date,
-		active: active,
-	});
-	$this.add($.UI.create('Label', {
-		classes: ['dayNumber'],
-		color: is_today ? args.todayTextColor : args.dateTextColor,
-		text: date.date()
-	}));
-	$this.add($.UI.create('View', {
-		classes: ['dayDot'],
-		backgroundColor: active ? args.activePinColor : args.inactivePinColor
-	}));
-
-	return $this;
 }
 
 function getDayContainer(number) {
@@ -123,16 +100,32 @@ function setItemCurrent($item, current) {
 function getMonthView(month, year) {
 	var month_rows = [];
 	var num_cols = 7;
-	var num_rows = 5;
 	var start_date = Moment().month(month).year(year).startOf('month').startOf('week');
+	var end_date = Moment().month(month).year(year).endOf('month').endOf('week');
+	var num_rows = Math.ceil(end_date.diff(start_date, 'days') / num_cols);
 
+	// Month skeleton
 	var $month_view = $.UI.create('View', {
 		classes: ['month'],
 		month: month,
 		year: year,
 		backgroundColor: args.backgroundColor,
+		height: num_rows * 50,
+		width: $.calendar.rect.width,
 		ready: false
 	});
+
+	// Month activity indicator
+	var $loader = Ti.UI.createActivityIndicator({
+		style: OS_IOS ? Ti.UI.iPhone.ActivityIndicatorStyle.BIG : Ti.UI.ActivityIndicatorStyle.BIG,
+		center: {
+			x: '50%',
+			y: '50%'
+		}
+	});
+	$month_view.add($loader);
+	$month_view.__loader = $loader;
+	$loader.show();
 
 	return $month_view;
 }
@@ -140,8 +133,9 @@ function getMonthView(month, year) {
 function buildMonth($month_view, dates) {
 	if (!$month_view || $month_view.ready) return;
 	var num_cols = 7;
-	var num_rows = 5;
 	var start_date = Moment().month($month_view.month).year($month_view.year).startOf('month').startOf('week');
+	var end_date = Moment().month($month_view.month).year($month_view.year).endOf('month').endOf('week');
+	var num_rows = Math.ceil(end_date.diff(start_date, 'days') / num_cols);
 	var $days_container = Ti.UI.createView({
 		height: Ti.UI.SIZE,
 		width: Ti.UI.SIZE
@@ -159,14 +153,15 @@ function buildMonth($month_view, dates) {
 		setItemCurrent($curview, curday.month() === $month_view.month);
 		setItemToday($curview, curday.isSame(Moment(), 'day'));
 
-		$curview.top = row * ($curview.height + 1);
-		$curview.left = col * ($curview.width + 1);
+		$curview.top = row * ($curview.height);
+		$curview.left = col * ($curview.width);
 
 		$days_container.add($curview);
 	}
 
 	$month_view.add($days_container);
 	$month_view.ready = true;
+	$month_view.__loader.hide();
 }
 
 function buildCalendar() {
@@ -176,15 +171,15 @@ function buildCalendar() {
 	getDayLabels();
 	// Create the calendar views
 	var curmonth_index = -1; var i = 0;
-	for (var m = Moment(args.min_date); m < Moment(args.max_date); m.add(1, 'months')) {
+	for (var m = Moment(args.min_date); m.diff(Moment(args.max_date)) <= 0; m.add(1, 'months')) {
 		if (m.isSame(Moment(), 'month')) curmonth_index = i;
 		$.monthScroll.addView(getMonthView(m.month(), m.year()));
 		i++;
 	}
 
-	setCurrentMonth(curmonth_index || Math.floor($.monthScroll.views.length / 2));
-	if (args.current_date.month() - 1 > -1) buildMonth($.monthScroll.views[args.current_date.month()-1], args.active_dates);
-	if (args.current_date.month() + 1 < 12) buildMonth($.monthScroll.views[args.current_date.month()+1], args.active_dates);
+	setCurrentMonth(curmonth_index > 0 ? curmonth_index : 0);
+	if (current_page - 1 > -1) buildMonth($.monthScroll.views[current_page-1], args.active_dates);
+	if (current_page + 1 < 12) buildMonth($.monthScroll.views[current_page+1], args.active_dates);
 }
 
 function setCurrentMonth(m) {

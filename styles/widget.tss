@@ -24,10 +24,10 @@
 "#calendar": {
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
-	layout: 'vertical',
 },
 "#dayLabels": {
 	width: Ti.UI.FILL,
+	top: 0,
 	height: 30,
 },
 ".dayLabel": {
@@ -37,14 +37,16 @@
 },
 "#monthScroll": {
 	width: Ti.UI.FILL,
-	height: Ti.UI.SIZE
+	height: Ti.UI.SIZE,
+	top: 30
 },
 ".month": {
-	width: Ti.UI.FILL,
-	height: Ti.UI.SIZE
+	top: 0
 },
 ".day": {
-	height: 50
+	height: 50,
+	borderWidth: 1,
+	borderColor: '#6fff'
 },
 ".dayNumber": {
 	top: 3,
