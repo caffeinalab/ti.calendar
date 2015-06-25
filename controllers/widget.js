@@ -2,6 +2,9 @@
 var args = arguments[0] || {};
 var Moment = require('alloy/moment');
 
+var ROWS = 6;
+var COLUMNS = 7;
+
 _.defaults(args, {
 
 	current_date: Moment(),
@@ -10,15 +13,16 @@ _.defaults(args, {
 	max_date: Moment().add(6, 'months'),
 
 	backgroundColor: 'transparent',
-	dateBackgroundColor: '#6000',
+	dateBackgroundColor: 'transparent',
 	todayBackgroundColor: '#af80',
 	dateTextColor: '#fff',
 	todayTextColor: '#000',
-	activePinColor: 'orange',
+	activePinColor: '#f39911',
 	inactivePinColor: 'transparent',
 	selectedBackgroundColor: '#60f39911',
 
-	allowInactiveSelection: 'false'
+	allowInactiveSelection: 'false',
+	fillMonth: 'false'
 
 });
 
@@ -30,14 +34,14 @@ var current_page = 0;
 /////////////
 
 function getDayLabels() {
-	var days = Moment.weekdaysShort();
+	var days = Moment.weekdaysMin();
 	days.push(days.shift()); // Moment week has Sunday at index 0
 	_.each(days, function(day, i) {
-		var width = Math.floor($.calendar.rect.width / 7);
+		var width = Math.floor($.calendar.rect.width / COLUMNS);
 		var $label = $.UI.create('Label', {
 			classes: ['dayLabel'],
 			width: width,
-			text: day,
+			text: day.charAt(0),
 			left: i * width
 		});
 
@@ -60,8 +64,9 @@ function isInMomentsList(date, dates) {
 function getDayContainer(number) {
 	var $this = $.UI.create('View', {
 		classes: ['day'],
-		width: Math.floor($.calendar.rect.width / 7),
-		backgroundColor: '#6000',
+		width: Math.floor($.monthScroll.rect.width / COLUMNS),
+		height: Math.floor($.monthScroll.rect.height / ROWS),
+		backgroundColor: args.dateBackgroundColor,
 		opacity: 1,
 		date: null,
 		active: null,
@@ -86,11 +91,12 @@ function setItemDate($item, date) {
 
 function setItemActive($item, active) {
 	$item.active = active;
-	$item.children[1].backgroundColor = active ? 'orange' : 'transparent';
+	$item.children[1].backgroundColor = active ? args.activePinColor : args.inactivePinColor;
 }
 
 function setItemToday($item, is_today) {
-	$item.backgroundColor = is_today ? '#9f80' : '#6000';
+	$item.backgroundColor = is_today ? args.todayBackgroundColor : args.dateBackgroundColor;
+	$item.children[0].color = is_today ? args.todayTextColor : args.dateTextColor;
 }
 
 function setItemCurrent($item, current) {
@@ -99,10 +105,8 @@ function setItemCurrent($item, current) {
 
 function getMonthView(month, year) {
 	var month_rows = [];
-	var num_cols = 7;
 	var start_date = Moment().month(month).year(year).startOf('month').startOf('week');
 	var end_date = Moment().month(month).year(year).endOf('month').endOf('week');
-	var num_rows = Math.ceil(end_date.diff(start_date, 'days') / num_cols);
 
 	// Month skeleton
 	var $month_view = $.UI.create('View', {
@@ -110,10 +114,16 @@ function getMonthView(month, year) {
 		month: month,
 		year: year,
 		backgroundColor: args.backgroundColor,
-		height: num_rows * 50,
-		width: $.calendar.rect.width,
 		ready: false
 	});
+
+	// Separators
+	for (var i = 0; i < ROWS; i++) {
+		$month_view.add($.UI.create('View', {
+			classes: ['hr'],
+			top: (i+1) * Math.floor($.monthScroll.rect.height / ROWS)
+		}));
+	}
 
 	// Month activity indicator
 	var $loader = Ti.UI.createActivityIndicator({
@@ -132,31 +142,32 @@ function getMonthView(month, year) {
 
 function buildMonth($month_view, dates) {
 	if (!$month_view || $month_view.ready) return;
-	var num_cols = 7;
 	var start_date = Moment().month($month_view.month).year($month_view.year).startOf('month').startOf('week');
 	var end_date = Moment().month($month_view.month).year($month_view.year).endOf('month').endOf('week');
-	var num_rows = Math.ceil(end_date.diff(start_date, 'days') / num_cols);
 	var $days_container = Ti.UI.createView({
-		height: Ti.UI.SIZE,
-		width: Ti.UI.SIZE
+		height: Ti.UI.FILL,
+		width: Ti.UI.FILL
 	});
 
 	// Add day containers
-	for (var d = 0; d < num_rows*num_cols; d++) {
+	for (var d = 0; d < ROWS*COLUMNS; d++) {
 		var curday = Moment(start_date).add(d, 'days');
-		var $curview = getDayContainer(curday.date());
-		var row = Math.floor(d/num_cols);
-		var col = d % num_cols;
+		// If fillMonth is disabled, add only this month's days
+		if (curday.month() === $month_view.month || args.fillMonth == true) {
+			var $curview = getDayContainer(curday.date());
+			var row = Math.floor(d/COLUMNS);
+			var col = d % COLUMNS;
 
-		setItemDate($curview, curday);
-		setItemActive($curview, isInMomentsList(curday, dates));
-		setItemCurrent($curview, curday.month() === $month_view.month);
-		setItemToday($curview, curday.isSame(Moment(), 'day'));
+			setItemDate($curview, curday);
+			setItemActive($curview, isInMomentsList(curday, dates));
+			setItemCurrent($curview, curday.month() === $month_view.month);
+			setItemToday($curview, curday.isSame(Moment(), 'day'));
 
-		$curview.top = row * ($curview.height);
-		$curview.left = col * ($curview.width);
+			$curview.top = row * ($curview.height);
+			$curview.left = col * ($curview.width);
 
-		$days_container.add($curview);
+			$days_container.add($curview);
+		}
 	}
 
 	$month_view.add($days_container);
@@ -173,19 +184,25 @@ function buildCalendar() {
 	var curmonth_index = -1; var i = 0;
 	for (var m = Moment(args.min_date); m.diff(Moment(args.max_date)) <= 0; m.add(1, 'months')) {
 		if (m.isSame(Moment(), 'month')) curmonth_index = i;
-		$.monthScroll.addView(getMonthView(m.month(), m.year()));
+		var monthview = getMonthView(m.month(), m.year());
+		$.monthScroll.addView(monthview);
 		i++;
 	}
 
-	setCurrentMonth(curmonth_index > 0 ? curmonth_index : 0);
-	if (current_page - 1 > -1) buildMonth($.monthScroll.views[current_page-1], args.active_dates);
-	if (current_page + 1 < 12) buildMonth($.monthScroll.views[current_page+1], args.active_dates);
+	$.monthScroll.currentPage = current_page = curmonth_index > 0 ? curmonth_index : 0;
+	refreshCalendarMonth(current_page);
 }
 
-function setCurrentMonth(m) {
-	$.monthScroll.currentPage = current_page = m;
-	$.monthName.text = Moment().month($.monthScroll.views[m].month).year($.monthScroll.views[m].year).format('MMMM YYYY');
+function refreshCalendarMonth(m) {
+	var month_date = Moment().month($.monthScroll.views[m].month).year($.monthScroll.views[m].year);
+	
+	$.monthName.text = month_date.format('MMMM').toUpperCase();
+	$.monthYear.text = month_date.format('YYYY');
+
 	buildMonth($.monthScroll.views[m], args.active_dates);
+
+	if (current_page - 1 > -1) buildMonth($.monthScroll.views[m-1], args.active_dates);
+	if (current_page + 1 < 12) buildMonth($.monthScroll.views[m+1], args.active_dates);
 }
 
 ///////////////
@@ -196,20 +213,8 @@ $.main.addEventListener('postlayout', buildCalendar);
 
 $.monthScroll.addEventListener('scroll', function(e) {
 	if (e.currentPage === current_page) return;
-	$.monthName.text = Moment().month(e.view.month).year(e.view.year).format('MMMM YYYY');
-
-	var old_page = current_page;
 	current_page = e.currentPage;
-
-	// Genereate the adjacent views
-	if (current_page > old_page) {
-		buildMonth($.monthScroll.views[current_page+1], args.active_dates);
-	} else {
-		buildMonth($.monthScroll.views[current_page-1], args.active_dates);
-	}
-
-	// Build the new month
-	buildMonth(e.view, args.active_dates);
+	refreshCalendarMonth(current_page);
 });
 
 $.monthScroll.addEventListener('click', function(e) {

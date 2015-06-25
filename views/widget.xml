@@ -1,18 +1,20 @@
 <Alloy>
 	<View id="main" >
-		<View class="sp1/2" />
 		<View id="header" class="bar">
-			<Label id="monthName" class="headerText" />
+			<View class="hr" top="0" />
+			<ImageView id="leftCtrlArrow" image="" />
+			<View class="headerText" >
+				<Label id="monthName" class="headerLabel" />
+				<Label id="monthYear" class="headerLabel" />
+			</View>
+			<ImageView id="rightCtrlArrow" />
+			<View class="hr" bottom="0" />
 		</View>
 		<View class="sp1/2" />
 		<View id="calendar" >
 			<View id="dayLabels" />
+			<View class="hr" height="2" backgroundColor="#fff" />
 			<ScrollableView id="monthScroll" />
 		</View>
-		<View class="sp1/2" />
-		<View id="footer" class="bar">
-			<Label class="headerText" text="Addio" />
-		</View>
-		<View class="sp1/2" />
 	</View>
 </Alloy>

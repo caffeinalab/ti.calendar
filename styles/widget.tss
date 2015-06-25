@@ -1,7 +1,7 @@
 "Label": {
 	color: '#fff',
 	font: {
-		fontSize: 14
+		fontSize: 17
 	}
 }
 "#main": {
@@ -11,55 +11,68 @@
 },
 ".bar": {
 	width: Ti.UI.FILL,
-	height: Ti.UI.SIZE
+	backgroundColor: '#8000'
 },
-"#monthName": {
-	font: { fontSize: 18 }
+"#header": {
+	height: 60
 },
 ".headerText": {
-	height: Ti.UI.SIZE,
-	width: Ti.UI.FILL,
-	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+	layout: 'horizontal',
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE
+},
+".headerLabel": {
+	font: { fontSize: 25 }
+},
+"#monthName": {
+	font: { fontWeight: 'bold' }
+},
+"#monthYear": {
+	font: { fontWeight: 'light' },
+	left: 4
 },
 "#calendar": {
-	width: Ti.UI.SIZE,
+	width: '88%',
+	layout: 'vertical',
 	height: Ti.UI.SIZE,
 },
 "#dayLabels": {
 	width: Ti.UI.FILL,
-	top: 0,
-	height: 30,
+	height: 40,
 },
 ".dayLabel": {
-	height: 30,
-	backgroundColor: '#3000',
-	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+	height: Ti.UI.SIZE,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_CENTER,
+	font: { fontWeight: 'bold' }
 },
 "#monthScroll": {
 	width: Ti.UI.FILL,
-	height: Ti.UI.SIZE,
-	top: 30
+	height: 300
 },
 ".month": {
-	top: 0
+	height: Ti.UI.SIZE,
+	width: Ti.UI.FILL
 },
 ".day": {
-	height: 50,
-	borderWidth: 1,
-	borderColor: '#6fff'
-},
+	layout: 'vertical'
+}
 ".dayNumber": {
-	top: 3,
-	left: 5,
-	touchEnabled: false
+	top: '10%',
+	touchEnabled: false,
+	font: { fontWeight: 'light' }
 },
 ".dayDot": {
+	top: '5%',
 	height: 6,
 	width: 6,
 	borderRadius: 3,
-	top: 23,
-	left: 5,
 	touchEnabled: false
+},
+".hr": {
+	width: Ti.UI.FILL,
+	height: 1,
+	backgroundColor: '#2fff'
 },
 ".sp1/2": {
 	height: 6
