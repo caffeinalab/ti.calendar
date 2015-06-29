@@ -24,10 +24,31 @@
 ".headerLabel": {
 	font: { fontSize: 25 }
 },
-"#monthName": {
+".ctrlBtn": {
+	width: 40,
+	height: 40,
+	borderRadius: 20,
+	borderWidth: 1,
+	borderColor: '#8fff'
+},
+"#leftBtn": {
+	left: 20
+},
+"#rightBtn": {
+	right: 20
+},
+"#leftArrow": {
+	right: 16,
+	image: WPATH('/images/arrow_left.png')
+},
+"#rightArrow": {
+	left: 16,
+	image: WPATH('/images/arrow_right.png')
+},
+".monthName": {
 	font: { fontWeight: 'bold' }
 },
-"#monthYear": {
+".monthYear": {
 	font: { fontWeight: 'light' },
 	left: 4
 },

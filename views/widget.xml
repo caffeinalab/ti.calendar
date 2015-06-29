@@ -2,12 +2,16 @@
 	<View id="main" >
 		<View id="header" class="bar">
 			<View class="hr" top="0" />
-			<ImageView id="leftCtrlArrow" image="" />
-			<View class="headerText" >
-				<Label id="monthName" class="headerLabel" />
-				<Label id="monthYear" class="headerLabel" />
+			<View id="leftBtn" class="ctrlBtn" >
+				<ImageView id="leftArrow" />
 			</View>
-			<ImageView id="rightCtrlArrow" />
+			<View class="headerText" >
+				<Label id="monthName" class="monthName" />
+				<Label id="monthYear" class="monthYear" />
+			</View>
+			<View id="rightBtn" class="ctrlBtn" >
+				<ImageView id="rightArrow" />
+			</View>
 			<View class="hr" bottom="0" />
 		</View>
 		<View class="sp1/2" />

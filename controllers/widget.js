@@ -117,14 +117,6 @@ function getMonthView(month, year) {
 		ready: false
 	});
 
-	// Separators
-	for (var i = 0; i < ROWS; i++) {
-		$month_view.add($.UI.create('View', {
-			classes: ['hr'],
-			top: (i+1) * Math.floor($.monthScroll.rect.height / ROWS)
-		}));
-	}
-
 	// Month activity indicator
 	var $loader = Ti.UI.createActivityIndicator({
 		style: OS_IOS ? Ti.UI.iPhone.ActivityIndicatorStyle.BIG : Ti.UI.ActivityIndicatorStyle.BIG,
@@ -148,6 +140,14 @@ function buildMonth($month_view, dates) {
 		height: Ti.UI.FILL,
 		width: Ti.UI.FILL
 	});
+
+	// Separators
+	for (var i = 0; i < ROWS; i++) {
+		$days_container.add($.UI.create('View', {
+			classes: ['hr'],
+			top: (i+1) * Math.floor($.monthScroll.rect.height / ROWS)
+		}));
+	}
 
 	// Add day containers
 	for (var d = 0; d < ROWS*COLUMNS; d++) {
@@ -226,4 +226,12 @@ $.monthScroll.addEventListener('click', function(e) {
 		date: e.source.date,
 		active: e.source.active
 	});
+});
+
+$.leftBtn.addEventListener('click', function() {
+	$.monthScroll.movePrevious();
+});
+
+$.rightBtn.addEventListener('click', function() {
+	$.monthScroll.moveNext();
 });
