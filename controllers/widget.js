@@ -33,6 +33,11 @@ var current_page = 0;
 // Methods //
 /////////////
 
+function refreshArrows() {
+	$.leftBtn.opacity = current_page <= 0 ? 0.4 : 1;
+	$.rightBtn.opacity = current_page >= $.monthScroll.views.length - 1 ? 0.4 : 1;
+}
+
 function getDayLabels() {
 	var days = Moment.weekdaysMin();
 	days.push(days.shift()); // Moment week has Sunday at index 0
@@ -191,6 +196,7 @@ function buildCalendar() {
 
 	$.monthScroll.currentPage = current_page = curmonth_index > 0 ? curmonth_index : 0;
 	refreshCalendarMonth(current_page);
+	refreshArrows();
 }
 
 function refreshCalendarMonth(m) {
@@ -214,6 +220,7 @@ $.main.addEventListener('postlayout', buildCalendar);
 $.monthScroll.addEventListener('scroll', function(e) {
 	if (e.currentPage === current_page) return;
 	current_page = e.currentPage;
+	refreshArrows();
 	refreshCalendarMonth(current_page);
 });
 
