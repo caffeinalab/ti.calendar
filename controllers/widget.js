@@ -7,11 +7,13 @@ var COLUMNS = 7;
 
 _.defaults(args, {
 
+	// Data
 	current_date: Moment(),
 	active_dates: [],
 	min_date: Moment().subtract(6, 'months'),
 	max_date: Moment().add(6, 'months'),
 
+	// Style
 	backgroundColor: 'transparent',
 	dateBackgroundColor: 'transparent',
 	todayBackgroundColor: '#af80',
@@ -20,7 +22,9 @@ _.defaults(args, {
 	activePinColor: '#f39911',
 	inactivePinColor: 'transparent',
 	selectedBackgroundColor: '#60f39911',
+	fontFamily: '',
 
+	// Behaviour
 	allowInactiveSelection: 'false',
 	fillMonth: 'false'
 
@@ -47,7 +51,10 @@ function getDayLabels() {
 			classes: ['dayLabel'],
 			width: width,
 			text: day.charAt(0),
-			left: i * width
+			left: i * width,
+			font: {
+				fontFamily: args.fontFamily
+			}
 		});
 
 		$.dayLabels.add($label);
@@ -79,7 +86,10 @@ function getDayContainer(number) {
 	$this.add($.UI.create('Label', {
 		classes: ['dayNumber'],
 		color: '#fff',
-		text: number
+		text: number,
+		font: {
+			fontFamily: args.fontFamily
+		}
 	}));
 	$this.add($.UI.create('View', {
 		classes: ['dayDot'],
@@ -242,3 +252,16 @@ $.leftBtn.addEventListener('click', function() {
 $.rightBtn.addEventListener('click', function() {
 	$.monthScroll.moveNext();
 });
+
+//////////
+// Init //
+//////////
+
+$.monthName.font = {
+	fontFamily: args.fontFamily,
+	fontWeight: 'bold'
+};
+$.monthYear.font = {
+	fontFamily: args.fontFamily,
+	fontWeight: 'light'
+};

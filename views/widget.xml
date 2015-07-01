@@ -6,8 +6,8 @@
 				<ImageView id="leftArrow" />
 			</View>
 			<View class="headerText" >
-				<Label id="monthName" class="monthName" />
-				<Label id="monthYear" class="monthYear" />
+				<Label id="monthName" />
+				<Label id="monthYear" />
 			</View>
 			<View id="rightBtn" class="ctrlBtn" >
 				<ImageView id="rightArrow" />

@@ -45,11 +45,7 @@
 	left: 16,
 	image: WPATH('/images/arrow_right.png')
 },
-".monthName": {
-	font: { fontWeight: 'bold' }
-},
-".monthYear": {
-	font: { fontWeight: 'light' },
+"#monthYear": {
 	left: 4
 },
 "#calendar": {
