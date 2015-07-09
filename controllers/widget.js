@@ -25,8 +25,9 @@ _.defaults(args, {
 	fontFamily: '',
 
 	// Behaviour
-	allowInactiveSelection: 'false',
-	fillMonth: 'false'
+	allowInactiveSelection: false,
+	fillMonth: false,
+	enablePastDays: false
 
 });
 
@@ -175,7 +176,7 @@ function buildMonth($month_view, dates) {
 
 			setItemDate($curview, curday);
 			setItemActive($curview, isInMomentsList(curday, dates));
-			setItemCurrent($curview, curday.month() === $month_view.month);
+			setItemCurrent($curview, !curday.isBefore(Moment(), 'day') || (args.enablePastDays == true && (curday.month() === $month_view.month)));
 			setItemToday($curview, curday.isSame(Moment(), 'day'));
 
 			$curview.top = row * ($curview.height);
@@ -235,7 +236,7 @@ $.monthScroll.addEventListener('scroll', function(e) {
 });
 
 $.monthScroll.addEventListener('click', function(e) {
-	if (!e.source.date || (!e.source.active && args.allowInactiveSelection)) return;
+	if (!e.source.date || (!e.source.active && args.allowInactiveSelection) || (args.enablePastDays == false && e.source.date.isBefore(Moment(), 'day'))) return;
 
 	e.source.animate({ backgroundColor: args.selectedBackgroundColor, duration: 150, autoreverse: true });
 
