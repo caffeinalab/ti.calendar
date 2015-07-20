@@ -70,7 +70,7 @@ function getMomentDates(dates) {
 
 function isInMomentsList(date, dates) {
 	return _.find(dates, function(day) {
-		return date.isSame(day);
+		return date.isSame(day, 'day');
 	});
 }
 
@@ -236,7 +236,7 @@ $.monthScroll.addEventListener('scroll', function(e) {
 });
 
 $.monthScroll.addEventListener('click', function(e) {
-	if (!e.source.date || (!e.source.active && args.allowInactiveSelection) || (args.enablePastDays == false && e.source.date.isBefore(Moment(), 'day'))) return;
+	if (!e.source.date || (!e.source.active && !args.allowInactiveSelection) || (args.enablePastDays == false && e.source.date.isBefore(Moment(), 'day'))) return;
 
 	e.source.animate({ backgroundColor: args.selectedBackgroundColor, duration: 150, autoreverse: true });
 
