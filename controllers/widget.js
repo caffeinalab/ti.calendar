@@ -135,7 +135,7 @@ function getMonthView(month, year) {
 
 	// Month activity indicator
 	var $loader = Ti.UI.createActivityIndicator({
-		style: OS_IOS ? Ti.UI.iPhone.ActivityIndicatorStyle.BIG : Ti.UI.ActivityIndicatorStyle.BIG,
+		style: Ti.UI.ActivityIndicatorStyle.BIG,
 		center: {
 			x: '50%',
 			y: '50%'
